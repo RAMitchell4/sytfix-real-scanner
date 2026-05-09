@@ -9,7 +9,7 @@ import os, sys, subprocess, json, urllib.request, urllib.error, shutil, textwrap
 ROOT   = os.path.dirname(os.path.abspath(__file__))
 GITHUB_TOKEN = os.environ.get("GITHUB_TOKEN", "")
 GITHUB_USER  = os.environ.get("GITHUB_USER",  "RAMitchell4")
-REPO_NAME    = os.environ.get("REPO_NAME",    "sytfix-site")
+REPO_NAME    = os.environ.get("REPO_NAME",    "sytfix")
 API          = "https://api.github.com"
 BRANCH       = "main"
 
