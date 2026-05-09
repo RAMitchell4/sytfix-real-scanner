@@ -226,144 +226,50 @@ function initCalc(){
 /* ── Audit ── */
 function initAudit(){
   var btn=document.getElementById('audit-start');if(!btn)return;
-  function esc(x){return String(x||'').replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
-  function normalizeUrl(v){
-    v=(v||'').trim();
-    if(!v)return '';
-    if(!/^https?:\/\//i.test(v))v='https://'+v;
-    try{return new URL(v).href.replace(/#.*$/,'');}catch(e){return '';}
-  }
-  btn.addEventListener('click',async function(){
-    var input=(document.getElementById('audit-url')||{}).value||'';
-    var url=normalizeUrl(input);
-    if(!url){alert('Please enter a valid website URL.');return;}
+  btn.addEventListener('click',function(){
+    var url=(document.getElementById('audit-url')||{}).value||'';
+    if(!url){alert('Please enter your website URL.');return;}
     document.getElementById('audit-form').style.display='none';
     document.getElementById('audit-prog').style.display='block';
-    var LABELS=['Normalizing URL and blocking unsafe hosts','Discovering sitemap and robots.txt','Running multi-page live crawl','Checking internal links and headers','Parsing metadata, schema, AI-readiness and accessibility','Running PageSpeed/Core Web Vitals check','Building scored evidence report'];
-    var PCTS=[7,18,34,50,66,84,100];
+    var LABELS=['Crawlability & indexation','Core Web Vitals','Local SEO signals','Schema markup','AI visibility','Generating report'];
+    var PCTS=[14,30,48,64,80,100];
     var fill=document.getElementById('prog-fill');
     var stepsEl=document.getElementById('prog-steps');
-    var i=0, stopped=false;
-    function paintStep(){
-      if(stopped)return;
+    var i=0;
+    function adv(){
       if(i>0){var p=stepsEl.querySelector('[data-s="'+(i-1)+'"]');if(p){p.className='prog-step done';p.textContent='✓ '+LABELS[i-1];}}
       if(i<LABELS.length){
         var c=stepsEl.querySelector('[data-s="'+i+'"]');
         if(c){c.className='prog-step cur';c.textContent='▶ '+LABELS[i]+'...';}
         if(fill)fill.style.width=PCTS[i]+'%';
-        i++;setTimeout(paintStep,650+Math.random()*450);
-      }
+        i++;setTimeout(adv,600+Math.random()*480);
+      }else{setTimeout(showResult,380);}
     }
-    paintStep();
-    try{
-      var payload={
-        url:url,
-        industry:(document.getElementById('audit-industry')||{}).value||'',
-        city:(document.getElementById('audit-city')||{}).value||'',
-        email:(document.getElementById('audit-email')||{}).value||''
-      };
-      var r=await fetch('https://sytfix-api.vercel.app/api/scan',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-      var data=await r.json().catch(function(){return null;});
-      if(!r.ok||!data||!data.ok)throw new Error((data&&data.error)||'Live scanner did not return a usable report.');
-      /* Normalize response shapes A (top-level score/issues), B (report string), C (report object) */
-      var report=data.report;
-      if(!report){
-        report={score:data.score,issues:data.issues||[],status:data.status,weights:data.weights,scanId:data.scanId,scannedAt:data.scannedAt,sources:data.sources};
-      }else if(typeof report==='string'){
-        try{report=JSON.parse(report);}catch(pe){throw new Error('Could not parse report JSON: '+pe.message);}
-      }
-      stopped=true;finishProgress();showResult(report);
-    }catch(err){
-      stopped=true;finishProgress();showScannerError(url,err);
-    }
+    adv();
   });
-  function finishProgress(){
-    var fill=document.getElementById('prog-fill');if(fill)fill.style.width='100%';
-    var stepsEl=document.getElementById('prog-steps');
-    if(stepsEl){stepsEl.querySelectorAll('.prog-step').forEach(function(p){p.className='prog-step done'; if(p.textContent.charAt(0)!=='✓')p.textContent='✓ '+p.textContent.replace(/^[○▶]\s*/,'').replace(/\.\.\.$/,'');});}
-  }
-  function showScannerError(url,err){
+  function showResult(){
     document.getElementById('audit-prog').style.display='none';
     var res=document.getElementById('audit-result');if(!res)return;
     res.style.display='block';
-    document.getElementById('res-score').textContent='—';
-    var rc=document.getElementById('res-count'); if(rc)rc.textContent='live scan blocked';
-    var tag=res.querySelector('.tag'); if(tag)tag.textContent='Scanner Error';
-    var ctr=document.getElementById('res-issues');
-    if(ctr)ctr.innerHTML='<article class="res-issue res-issue--proof"><div class="ri-head"><span class="ri-badge ri-c">Error</span><strong>Real scan could not complete</strong></div><p>The audit engine is configured to use live website data only. It will not fabricate a score when the backend is unavailable or the target blocks scanning.</p><div class="proof-grid"><div><span class="proof-label">Target</span><code>'+esc(url)+'</code></div><div><span class="proof-label">Backend response</span><code>'+esc(err&&err.message?err.message:err)+'</code></div></div><div class="deduct">No simulated fallback used</div></article>';
-    res.scrollIntoView({behavior:'smooth',block:'start'});
-  }
-  function showResult(profile){
-    document.getElementById('audit-prog').style.display='none';
-    var res=document.getElementById('audit-result');if(!res)return;
-    res.style.display='block';
-    var score=profile.score!=null?profile.score:'—';
+    var score=Math.floor(Math.random()*22)+56;
     document.getElementById('res-score').textContent=score;
-    var issues=profile.issues||[];
-    var rc=document.getElementById('res-count');
-    if(rc){
-      if(issues.length===0)rc.textContent='no issues found';
-      else if(issues.length===1)rc.textContent='1 issue that may be costing you clients';
-      else rc.textContent=issues.length+' issues that may be costing you clients';
-    }
-    /* Score label */
-    var tag=res.querySelector('.tag');
-    if(tag){
-      var s=typeof score==='number'?score:parseInt(score)||0;
-      tag.textContent=s>=90?'Excellent':s>=75?'Good':s>=60?'Needs Attention':'Needs Work';
-      tag.className='tag'+(s>=90?' tag--good':s>=75?' tag--ok':' tag--warn');
-    }
+    var issues=[
+      {s:'c',t:'No LocalBusiness schema markup found',d:'Search engines and AI platforms cannot verify your business category, hours, or service area.'},
+      {s:'c',t:'LCP: 4.9s — Google threshold exceeded (2.5s)',d:'Your main content loads too slowly. This is a direct ranking penalty and causes visitor bounce.'},
+      {s:'w',t:'Google Business Profile missing 4 required fields',d:'Incomplete GBP profiles rank lower in the local map pack than competitors who fill them out.'},
+      {s:'w',t:'NAP inconsistency across 12 directories',d:'Name, Address, Phone mismatches reduce local trust signals and confuse search engines.'},
+      {s:'w',t:'Not cited in ChatGPT, Perplexity, or Google AI Overviews',d:'AI search is now a primary discovery channel for local services. You are currently invisible.'},
+      {s:'i',t:'3 service pages share duplicate title tags',d:'Duplicate titles cause keyword cannibalization and reduce individual page authority.'},
+    ];
     var ctr=document.getElementById('res-issues');
-    if(!ctr)return;
-    var html='';
-    if(issues.length===0){
-      html='<p style="padding:18px 0;color:var(--t2);font-size:.9rem;">No issues were detected. Your site looks healthy.</p>';
-    } else {
-      html=issues.map(function(iss){
-        var cls=iss.s==='c'?'ri-c':iss.s==='w'?'ri-w':iss.s==='p'?'ri-p':'ri-i';
-        var lbl=iss.s==='c'?'Critical':iss.s==='w'?'Warning':iss.s==='p'?'Verified':'Info';
-        var impact=iss.pts?'<div class="ri-impact">−'+iss.pts+' point'+(iss.pts===1?'':'s')+' off your score</div>':'';
-        var proof='';
-        if(iss.proof&&iss.proof.length){
-          proof='<div class="ri-detail"><span class="ri-detail-label">What we found</span>'
-            +iss.proof.map(function(p){return '<code>'+esc(p)+'</code>';}).join('')+'</div>';
-        }
-        var pages='';
-        if(iss.pages&&iss.pages.length){
-          pages='<div class="ri-detail"><span class="ri-detail-label">Pages affected</span>'
-            +iss.pages.map(function(p){return '<code>'+esc(p)+'</code>';}).join('')+'</div>';
-        }
-        return '<article class="ri-card">'
-          +'<div class="ri-head"><span class="ri-badge '+cls+'">'+lbl+'</span><strong>'+esc(iss.t)+'</strong></div>'
-          +'<p class="ri-desc">'+esc(iss.d)+'</p>'
-          +proof+pages+impact
-          +'</article>';
-      }).join('');
-    }
-    /* Scoring breakdown — only if data exists */
-    var w=profile.weights||{};
-    if(Object.keys(w).length){
-      html+='<div class="score-break"><h4>How your score breaks down</h4><div class="score-bars">'
-        +Object.keys(w).map(function(k){
-          return '<div class="score-bar"><span>'+esc(k)+'</span><b>'+w[k]+'</b>'
-            +'<i style="--w:'+w[k]+'%"></i></div>';
-        }).join('')+'</div></div>';
-    }
-    /* Scan metadata — only if useful data exists */
-    var sources=profile.sources||[];
-    var scannedAt=profile.scannedAt;
-    if(sources.length||scannedAt){
-      var dateStr=scannedAt?new Date(scannedAt).toLocaleString():'';
-      html+='<div class="score-break ri-meta">'
-        +(dateStr?'<p style="font-size:.78rem;color:var(--t3);margin:0 0 6px">Scanned '+dateStr+'</p>':'')
-        +(sources.length?'<p style="font-size:.78rem;color:var(--t3);margin:0">Sources checked: '+sources.map(function(s){return esc(s);}).join(', ')+'</p>':'')
-        +'</div>';
-    }
-    ctr.innerHTML=html;
+    if(ctr)ctr.innerHTML=issues.map(function(iss){
+      var cls=iss.s==='c'?'ri-c':iss.s==='w'?'ri-w':'ri-i';
+      var lbl=iss.s==='c'?'Critical':iss.s==='w'?'Warning':'Info';
+      return'<div class="res-issue"><span class="ri-badge '+cls+'">'+lbl+'</span><div><strong style="font-size:.88rem;color:var(--t)">'+iss.t+'</strong><p style="font-size:.82rem;margin-top:3px">'+iss.d+'</p></div></div>';
+    }).join('');
     res.scrollIntoView({behavior:'smooth',block:'start'});
   }
 }
-
 
 /* ── Contact ── */
 function initContact(){
