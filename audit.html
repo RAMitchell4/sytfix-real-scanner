@@ -8,40 +8,9 @@
 <meta property="og:description" content="Run a free website audit with SytFix. Get an instant snapshot of your technical SEO, speed, and local visibility issues.">
 <meta property="og:type" content="website">
 <title>Free Site Audit | SytFix</title>
-<link rel="canonical" href="https://sytfix.com/audit.html">
-<meta property="og:url" content="https://sytfix.com/audit.html">
-<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="img/icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="css/main.css?v=20260510">
+<link rel="stylesheet" href="css/main.css">
 
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "ProfessionalService",
-  "name": "SytFix",
-  "url": "https://sytfix.com/",
-  "logo": "https://sytfix.com/img/logo.svg",
-  "image": "https://sytfix.com/img/logo.svg",
-  "email": "alex@sytfix.com",
-  "telephone": "+1-254-447-6464",
-  "founder": {"@type":"Person","name":"R. Alex Mitchell IV"},
-  "areaServed": [{"@type":"City","name":"Waco"},{"@type":"Country","name":"United States"}],
-  "address": {"@type":"PostalAddress","addressLocality":"Waco","addressRegion":"TX","addressCountry":"US"},
-  "priceRange": "$$",
-  "sameAs": [],
-  "knowsAbout": ["Technical SEO", "Core Web Vitals", "Local SEO", "AI search visibility", "Schema markup", "Website audits"],
-  "hasOfferCatalog": {
-    "@type": "OfferCatalog",
-    "name": "SytFix Audit Services",
-    "itemListElement": [
-      {"@type":"Offer","itemOffered":{"@type":"Service","name":"Technical SEO Audit"}},
-      {"@type":"Offer","itemOffered":{"@type":"Service","name":"Local SEO Audit"}},
-      {"@type":"Offer","itemOffered":{"@type":"Service","name":"Core Web Vitals Optimization"}},
-      {"@type":"Offer","itemOffered":{"@type":"Service","name":"AI Visibility Audit"}}
-    ]
-  }
-}
-</script>
 </head>
 <body>
 <div id="sf-loader" aria-hidden="true">
@@ -77,7 +46,7 @@
     </ul>
     <div class="nav-cta">
       <button class="theme-btn" aria-label="Toggle theme">☀</button>
-      <a href="audit.html" class="btn btn-p btn-sm">Free Audit →</a>
+      <a href="audit.html" class="btn btn-p">Free Audit →</a>
       <button class="burger" aria-label="Open menu" aria-expanded="false">
         <span></span><span></span><span></span>
       </button>
@@ -110,18 +79,18 @@
       <div class="audit-card reveal" id="audit-form">
         <h3 style="margin-bottom:8px;font-family:var(--serif)">Enter your website URL</h3>
         <p style="font-size:.88rem;margin-bottom:26px">We check technical SEO, speed, local signals, and AI visibility.</p>
-        <div class="f-group"><label class="f-label" for="audit-url">Website URL <span class="tip" data-tip="Enter your full domain, e.g. yourbusiness.com — no need to add https://">?</span></label>
+        <div class="f-group"><label class="f-label" for="audit-url">Website URL</label>
           <input class="f-input" type="text" id="audit-url" placeholder="yourdomain.com" autocomplete="off"></div>
-        <div class="f-group"><label class="f-label" for="audit-industry">Industry <span class="tip" data-tip="Helps us benchmark your site against direct competitors in your field.">?</span></label>
+        <div class="f-group"><label class="f-label" for="audit-industry">Industry</label>
           <select class="f-select" id="audit-industry">
             <option value="">Select your industry…</option>
             <option>Legal Practice</option><option>HVAC &amp; Roofing</option>
             <option>Plumbing &amp; Electrical</option><option>Dental &amp; Medical</option>
             <option>Damage Restoration</option><option>Specialty Contractor</option><option>Other</option>
           </select></div>
-        <div class="f-group"><label class="f-label" for="audit-city">Primary Service City <span class="tip" data-tip="The city where most of your clients come from. Used to check your local search rankings.">?</span></label>
+        <div class="f-group"><label class="f-label" for="audit-city">Primary Service City</label>
           <input class="f-input" type="text" id="audit-city" placeholder="e.g. Waco, TX"></div>
-        <div class="f-group"><label class="f-label" for="audit-email">Email <span class="tip" data-tip="Optional. Enter your email to receive a copy of the full report — we never spam.">?</span></label>
+        <div class="f-group"><label class="f-label" for="audit-email">Email (receive full report)</label>
           <input class="f-input" type="email" id="audit-email" placeholder="you@yourbusiness.com"></div>
         <div class="audit-checks">
           <div class="audit-check">Technical SEO</div><div class="audit-check">Core Web Vitals</div>
@@ -134,7 +103,7 @@
       </div>
       <div class="audit-card" id="audit-prog" style="display:none">
         <div style="text-align:center;margin-bottom:24px">
-          <div class="scan-spinner" aria-hidden="true"></div>
+          <div style="font-size:2rem;display:inline-block;animation:spin 1.5s linear infinite">⚡</div>
           <h3 style="margin:12px 0 6px;font-family:var(--serif)">Auditing your site…</h3>
           <p style="font-size:.86rem">This takes about 30 seconds.</p>
         </div>
@@ -221,6 +190,6 @@
     </div>
   </div>
 </footer>
-<script src="js/app.js?v=20260510"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
